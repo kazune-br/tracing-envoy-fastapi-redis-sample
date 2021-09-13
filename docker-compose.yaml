@@ -1,0 +1,33 @@
+version: "3.9"
+
+services:
+  envoy:
+    image: "envoy:latest"
+    build:
+      context: .
+      dockerfile: "./build/envoy/Dockerfile"
+    container_name: envoy
+    command: /usr/local/bin/envoy --service-cluster envoy -c /etc/envoy/envoy.yaml
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+
+  app:
+    container_name: app
+    build:
+      context: .
+      dockerfile: build/app/Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - ENV=dev
+    command: "python -u main.py"
+
+  jaeger:
+    image: jaegertracing/all-in-one
+    container_name: jaeger
+    environment:
+      COLLECTOR_ZIPKIN_HOST_PORT: 9411
+    ports:
+      - "9411:9411"
+      - "16686:16686"
