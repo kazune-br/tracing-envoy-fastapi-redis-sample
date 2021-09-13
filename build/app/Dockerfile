@@ -35,6 +35,7 @@ RUN python3 -m pip install --user --upgrade pip && \
 
 COPY ./main.py /app/
 COPY ./custom_logger.py /app/
+COPY ./redis_connection.py /app/
 
 ENV PATH=/app/.venv/bin:$PATH
 

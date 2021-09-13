@@ -2,6 +2,7 @@
 
 BASE_DOCKER_COMPOSE = docker-compose.yaml
 COMPOSE_OPTS        = -f "$(BASE_DOCKER_COMPOSE)"
+ID := a
 
 update-dependency:
 	poetry install && \
@@ -24,6 +25,18 @@ login:
 
 health:
 	curl localhost:9000/healthcheck | jq .
+
+insert:
+	curl -i -X POST localhost:9000/v1/data -H "Content-Type: application/json" -d $$(./scripts/datum_generator.sh)
+
+select:
+	@curl localhost:9000/v1/data/${ID}
+
+select-by-cli:
+	redis-cli --pass password --no-auth-warning zrange ${ID} 0 -1
+
+flush:
+	redis-cli --pass password --no-auth-warning FLUSHALL
 
 lint: sort autoflake black
 

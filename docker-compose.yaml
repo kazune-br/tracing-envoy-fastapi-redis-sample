@@ -23,6 +23,17 @@ services:
       - ENV=dev
     command: "python -u main.py"
 
+  redis:
+    build:
+      context: .
+      dockerfile: ./build/redis/Dockerfile
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./data/redis:/data
+    restart: always
+
   jaeger:
     image: jaegertracing/all-in-one
     container_name: jaeger
