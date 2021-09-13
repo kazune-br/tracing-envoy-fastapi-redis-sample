@@ -1,22 +1,24 @@
 import json
 from dataclasses import dataclass
 
-from fastapi import FastAPI, Request, status
+from fastapi import Depends, FastAPI, Request, status
 from fastapi.responses import JSONResponse
-from loguru import logger
+from jaeger_client.codecs import B3Codec
 from pydantic import BaseModel, Field
 from uvicorn import Config, Server
 
 from custom_logger import setup_logger
 from redis_connection import RedisConnector
+from tracer import CustomTracer
 
 app = FastAPI()
 redis_connection = RedisConnector(0)
+tracer = CustomTracer()
 
 
-@app.get("/healthcheck")
-def healthcheck(request: Request):
+def generate_span_ctx(request: Request):
     """
+    request.headers
     Headers({
         'host': 'localhost:9000',
         'user-agent': 'curl/7.64.1',
@@ -29,7 +31,18 @@ def healthcheck(request: Request):
         'x-b3-sampled': '1'
     })
     """
-    logger.info(request.headers)
+    carrier = {
+        "x-request-id": request.headers.get("x-request-id"),
+        "x-b3-traceid": request.headers.get("x-b3-traceid"),
+        "x-b3-spanid": request.headers.get("x-b3-spanid"),
+        "x-b3-sampled": request.headers.get("x-b3-sampled"),
+    }
+    codec = B3Codec()
+    return codec.extract(carrier)
+
+
+@app.get("/healthcheck")
+def healthcheck():
     return {"healthcheck": "ok"}
 
 
@@ -54,19 +67,26 @@ class SampleDatum(BaseModel):
 
 
 @app.post("/v1/data")
-def create(data: SampleDatum):
+def create(data: SampleDatum, span_ctx=Depends(generate_span_ctx)):
     model = data.to_model()
-    redis_connection.get_redis_client().zadd(model.key, {model.value: model.score})
+    with tracer.get_trace().start_span("redis_access", child_of=span_ctx) as span:
+        span.set_tag("action", "insert")
+        redis_connection.get_redis_client().zadd(model.key, {model.value: model.score})
+
     return JSONResponse(status_code=status.HTTP_201_CREATED, content={})
 
 
 @app.get("/v1/data/{sample_id}")
-def show(sample_id: str):
-    records = redis_connection.get_redis_client().zrange(
-        name=sample_id, start=0, end=-1, desc=True
-    )
+def show(sample_id: str, span_ctx=Depends(generate_span_ctx)):
+    with tracer.get_trace().start_span("redis_access", child_of=span_ctx) as span:
+        span.set_tag("action", "select")
+        records = redis_connection.get_redis_client().zrange(
+            name=sample_id, start=0, end=-1, desc=True
+        )
+
     if not records:
         return JSONResponse(status_code=status.HTTP_200_OK, content={})
+
     values = [json.loads(r.decode("utf-8")) for r in records]
     return JSONResponse(
         status_code=status.HTTP_200_OK, content={"id": sample_id, "values": values}
