@@ -69,8 +69,8 @@ class SampleDatum(BaseModel):
 @app.post("/v1/data")
 def create(data: SampleDatum, span_ctx=Depends(generate_span_ctx)):
     model = data.to_model()
-    with tracer.get_trace().start_span("redis_access", child_of=span_ctx) as span:
-        span.set_tag("action", "insert")
+    with tracer.get_trace().start_active_span("redis", child_of=span_ctx) as scope:
+        scope.set_tag("action", "insert")
         redis_connection.get_redis_client().zadd(model.key, {model.value: model.score})
 
     return JSONResponse(status_code=status.HTTP_201_CREATED, content={})
@@ -78,8 +78,9 @@ def create(data: SampleDatum, span_ctx=Depends(generate_span_ctx)):
 
 @app.get("/v1/data/{sample_id}")
 def show(sample_id: str, span_ctx=Depends(generate_span_ctx)):
-    with tracer.get_trace().start_span("redis_access", child_of=span_ctx) as span:
-        span.set_tag("action", "select")
+    # with tracer.get_trace().start_span("redis_access", child_of=span_ctx) as span:
+    with tracer.get_trace().start_active_span("redis", child_of=span_ctx) as scope:
+        scope.set_tag("action", "select")
         records = redis_connection.get_redis_client().zrange(
             name=sample_id, start=0, end=-1, desc=True
         )
