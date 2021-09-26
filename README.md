@@ -1,4 +1,6 @@
 # tracing envoy fastapi redis sample
+![demo](./assets/demo.gif)
+
 ## Prerequisites
 
 ### Poetry Preparation
@@ -11,8 +13,12 @@ source $HOME/.poetry/env
 poetry config virtualenvs.in-project true
 ```
 
-
 ## How to run app
 ```bash
 make up
+open http://localhost:16686/
+make health
+make insert
+make bulk-insert
+make select
 ```
