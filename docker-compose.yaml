@@ -21,7 +21,7 @@ services:
       - "8000:8000"
     environment:
       - ENV=dev
-    command: "python -u main.py"
+    command: "python -u src/main.py"
 
   redis:
     build:

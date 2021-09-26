@@ -33,13 +33,10 @@ RUN python3 -m pip install --user --upgrade pip && \
     rm -rf ~/.cache/pip/* && \
     rm -rf ~/.cache/pypoetry/*
 
-COPY ./main.py /app/
-COPY ./custom_logger.py /app/
-COPY ./redis_connection.py /app/
-COPY ./tracer.py /app/
+COPY ./src /app/src
 
 ENV PATH=/app/.venv/bin:$PATH
 
 EXPOSE 8000
 
-CMD ["python", "-u", "main.py"]
+CMD ["python", "-u", "src/main.py"]
