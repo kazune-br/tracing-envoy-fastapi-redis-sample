@@ -75,7 +75,7 @@ class SampleData(BaseModel):
 def create(data: SampleDatum, span_ctx=Depends(generate_span_ctx)):
     model = data.to_model()
     with tracer.get_trace().start_active_span("redis", child_of=span_ctx) as scope:
-        scope.span.set_tag("action", "insert")
+        scope.span.set_tag("action", "zadd")
         redis_connection.get_redis_client().zadd(model.key, {model.value: model.score})
 
     return JSONResponse(status_code=status.HTTP_201_CREATED, content={})
@@ -84,7 +84,7 @@ def create(data: SampleDatum, span_ctx=Depends(generate_span_ctx)):
 def insert_sample_data(datum: SampleDatum, span_ctx):
     with tracer.get_trace().start_span("redis", child_of=span_ctx) as span:
         model = datum.to_model()
-        span.set_tag("action", "insert")
+        span.set_tag("action", "zadd")
         span.log_kv({"key": model.key, "value": model.value, "score": model.score})
         redis_connection.get_redis_client().zadd(model.key, {model.value: model.score})
 
@@ -103,7 +103,7 @@ async def bulk_create(
 def show(sample_id: str, span_ctx=Depends(generate_span_ctx)):
     # with tracer.get_trace().start_span("redis_access", child_of=span_ctx) as span:
     with tracer.get_trace().start_active_span("redis", child_of=span_ctx) as scope:
-        scope.set_tag("action", "select")
+        scope.span.set_tag("action", "zrange")
         records = redis_connection.get_redis_client().zrange(
             name=sample_id, start=0, end=-1, desc=True
         )
