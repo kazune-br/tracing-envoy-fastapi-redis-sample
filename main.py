@@ -1,7 +1,8 @@
 import json
 from dataclasses import dataclass
+from typing import List
 
-from fastapi import Depends, FastAPI, Request, status
+from fastapi import BackgroundTasks, Depends, FastAPI, Request, status
 from fastapi.responses import JSONResponse
 from jaeger_client.codecs import B3Codec
 from pydantic import BaseModel, Field
@@ -66,14 +67,39 @@ class SampleDatum(BaseModel):
         )
 
 
+class SampleData(BaseModel):
+    values: List[SampleDatum] = Field(None, title="id")
+
+
 @app.post("/v1/data")
 def create(data: SampleDatum, span_ctx=Depends(generate_span_ctx)):
     model = data.to_model()
     with tracer.get_trace().start_active_span("redis", child_of=span_ctx) as scope:
-        scope.set_tag("action", "insert")
+        scope.span.set_tag("action", "insert")
         redis_connection.get_redis_client().zadd(model.key, {model.value: model.score})
 
     return JSONResponse(status_code=status.HTTP_201_CREATED, content={})
+
+
+def insert_sample_data(datum: SampleDatum, span_ctx):
+    with tracer.get_trace().start_span("redis", child_of=span_ctx) as span:
+        model = datum.to_model()
+        span.set_tag("action", "insert")
+        span.log_kv({"key": model.key, "value": model.value, "score": model.score})
+        redis_connection.get_redis_client().zadd(model.key, {model.value: model.score})
+
+    # with tracer.get_trace().start_active_span("redis") as scope:
+    #   scope.set_tag("action", "insert")
+
+
+@app.post("/v1/data/bulk")
+async def bulk_create(
+    data: SampleData, background_tasks: BackgroundTasks, span_ctx=Depends(generate_span_ctx)
+):
+    with tracer.get_trace().start_active_span("access", child_of=span_ctx):
+        for d in data.values:
+            background_tasks.add_task(insert_sample_data, d, span_ctx)
+        return JSONResponse(status_code=status.HTTP_202_ACCEPTED, content={})
 
 
 @app.get("/v1/data/{sample_id}")

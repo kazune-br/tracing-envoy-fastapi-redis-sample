@@ -29,6 +29,9 @@ health:
 insert:
 	curl -i -X POST localhost:9000/v1/data -H "Content-Type: application/json" -d $$(./scripts/datum_generator.sh)
 
+bulk-insert:
+	curl -i -X POST localhost:9000/v1/data/bulk -H "Content-Type: application/json" -d $$(./scripts/data_generator.sh)
+
 select:
 	@curl localhost:9000/v1/data/${ID}
 
