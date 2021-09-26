@@ -88,9 +88,6 @@ def insert_sample_data(datum: SampleDatum, span_ctx):
         span.log_kv({"key": model.key, "value": model.value, "score": model.score})
         redis_connection.get_redis_client().zadd(model.key, {model.value: model.score})
 
-    # with tracer.get_trace().start_active_span("redis") as scope:
-    #   scope.set_tag("action", "insert")
-
 
 @app.post("/v1/data/bulk")
 async def bulk_create(
