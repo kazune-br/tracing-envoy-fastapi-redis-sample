@@ -1,6 +1,9 @@
 # tracing envoy fastapi redis sample
 ![demo](./assets/demo.gif)
 
+## Architecture
+![architecture](./assets/architecture.drawio.png)
+
 ## Prerequisites
 
 ### Poetry Preparation
