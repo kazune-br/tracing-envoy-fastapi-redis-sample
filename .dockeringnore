@@ -1,0 +1,8 @@
+.venv
+assets
+scripts
+data
+docker-compose.yaml
+Makefile
+README.md
+requirements.txt

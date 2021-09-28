@@ -17,11 +17,14 @@ services:
     build:
       context: .
       dockerfile: build/app/Dockerfile
+    image: tracing-envoy-fastapi-redis-sample-app:latest
     ports:
       - "8000:8000"
     environment:
       - ENV=dev
     command: "python -u src/main.py"
+    volumes:
+      - ./src:/app/src
 
   redis:
     build:

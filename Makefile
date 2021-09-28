@@ -8,7 +8,7 @@ update-dependency:
 	poetry install && \
     poetry export -f requirements.txt --without-hashes --output requirements.txt
 
-build: update-dependency lint
+build: update-dependency
 	COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker compose $(COMPOSE_OPTS) build --parallel
 
 up: build
@@ -41,7 +41,7 @@ select-by-cli:
 flush:
 	redis-cli --pass password --no-auth-warning FLUSHALL
 
-lint: sort autoflake black
+# lint: sort autoflake black
 
 sort:
 	poetry run isort . --profile black
@@ -53,3 +53,12 @@ autoflake:
 		--remove-unused-variables .
 black:
 	poetry run black ./
+
+fix:
+	docker compose $(COMPOSE_OPTS) exec -T app poetry run autoflake -ri --remove-all-unused-imports --ignore-init-module-imports --remove-unused-variables src/
+	docker compose $(COMPOSE_OPTS) exec -T app poetry run isort . --profile black
+	docker compose $(COMPOSE_OPTS) exec -T app poetry run black .
+
+lint:
+	docker compose $(COMPOSE_OPTS) exec -T app poetry run black --check --diff .
+	docker compose $(COMPOSE_OPTS) exec -T app poetry run autoflake -r --check --remove-all-unused-imports  --ignore-init-module-imports --remove-unused-variables src/
