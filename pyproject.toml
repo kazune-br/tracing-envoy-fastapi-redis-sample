@@ -19,7 +19,7 @@ pytest = "^6.2.5"
 black = "^21.12b0"
 autoflake = "^1.4"
 isort = "^5.10.1"
-mypy = "^0.910"
+mypy = "^0.930"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
