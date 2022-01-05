@@ -6,13 +6,15 @@
 version: 2
       
 updates:
-  - package_manager: "pip"
+  - package-ecosystem: "pip"
     directory: "/"
-    update_schedule: "daily"
-    target_branch: "master"
-    default_labels:
+    schedule:
+      interval: "daily"
+    target_branch: "main"
+    labels:
+      - "pip"
       - "dependencies"
-    allowed_updates:
-      - match:
-          update_type: "all"
-    version_requirement_updates: "increase_versions"
+    allow:
+      # Allow both direct and indirect updates for all packages
+      - dependency-type: "all"
+    versioning-strategy: increase-if-necessary
