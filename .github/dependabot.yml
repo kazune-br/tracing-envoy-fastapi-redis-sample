@@ -17,4 +17,5 @@ updates:
     allow:
       # Allow both direct and indirect updates for all packages
       - dependency-type: "all"
+    open-pull-requests-limit: 30  
     # versioning-strategy: increase-if-necessary
