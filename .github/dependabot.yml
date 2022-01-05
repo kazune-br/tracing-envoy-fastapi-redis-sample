@@ -10,11 +10,11 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
-    target_branch: "main"
+    target-branch: "main"
     labels:
       - "pip"
       - "dependencies"
     allow:
       # Allow both direct and indirect updates for all packages
       - dependency-type: "all"
-    versioning-strategy: increase-if-necessary
+    # versioning-strategy: increase-if-necessary
