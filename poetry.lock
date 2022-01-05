@@ -407,7 +407,7 @@ tornado = "*"
 
 [[package]]
 name = "thrift"
-version = "0.13.0"
+version = "0.15.0"
 description = "Python bindings for the Apache Thrift RPC system"
 category = "main"
 optional = false
@@ -496,7 +496,7 @@ dev = ["pytest (>=4.6.2)", "black (>=19.3b0)"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "cfa5723f9279f98fb411ea01e0dd4b99825b4feb5deddffc17ac917e666ab181"
+content-hash = "4745bfecec35059907f24670b0318cfc902d9f389aee7040e745bbceb8253578"
 
 [metadata.files]
 asgiref = [
@@ -684,7 +684,7 @@ threadloop = [
     {file = "threadloop-1.0.2.tar.gz", hash = "sha256:8b180aac31013de13c2ad5c834819771992d350267bddb854613ae77ef571944"},
 ]
 thrift = [
-    {file = "thrift-0.13.0.tar.gz", hash = "sha256:9af1c86bf73433afc6010ed376a6c6aca2b54099cc0d61895f640870a9ae7d89"},
+    {file = "thrift-0.15.0.tar.gz", hash = "sha256:87c8205a71cf8bbb111cb99b1f7495070fbc9cabb671669568854210da5b3e29"},
 ]
 toml = [
     {file = "toml-0.10.2-py2.py3-none-any.whl", hash = "sha256:806143ae5bfb6a3c6e736a764057db0e6a0e05e338b5630894a5f779cabb4f9b"},
