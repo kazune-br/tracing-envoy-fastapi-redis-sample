@@ -182,7 +182,7 @@ plugins = ["setuptools"]
 
 [[package]]
 name = "jaeger-client"
-version = "4.7.0"
+version = "4.8.0"
 description = "Jaeger Python OpenTracing Tracer implementation"
 category = "main"
 optional = false
@@ -496,7 +496,7 @@ dev = ["pytest (>=4.6.2)", "black (>=19.3b0)"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "626cd4ff4942778dcf9dec8aa78339f396480e8a5a747a0d172b22ed371ca7d3"
+content-hash = "1b5f6f9d1273ddbb7291593141c55550469e0a49154a4284d217dbfa20d166a5"
 
 [metadata.files]
 appdirs = [
@@ -563,7 +563,7 @@ isort = [
     {file = "isort-5.9.3.tar.gz", hash = "sha256:9c2ea1e62d871267b78307fe511c0838ba0da28698c5732d54e2790bf3ba9899"},
 ]
 jaeger-client = [
-    {file = "jaeger-client-4.7.0.tar.gz", hash = "sha256:0eb178fd065bbacce11073821c08b99463fff945de2d00f6cbd9d0a4976fb218"},
+    {file = "jaeger-client-4.8.0.tar.gz", hash = "sha256:3157836edab8e2c209bd2d6ae61113db36f7ee399e66b1dcbb715d87ab49bfe0"},
 ]
 loguru = [
     {file = "loguru-0.5.3-py3-none-any.whl", hash = "sha256:f8087ac396b5ee5f67c963b495d615ebbceac2796379599820e324419d53667c"},
