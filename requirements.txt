@@ -10,7 +10,7 @@ idna==3.2; python_version >= "3.5" and python_full_version < "3.0.0" or python_f
 jaeger-client==4.7.0; python_version >= "3.7"
 loguru==0.5.3; python_version >= "3.5"
 opentracing==2.4.0; python_version >= "3.7"
-pydantic==1.8.2; python_full_version >= "3.6.1" and python_version >= "3.6"
+pydantic==1.9.1; python_full_version >= "3.6.1" and python_version >= "3.6"
 redis==3.5.3; (python_version >= "2.7" and python_full_version < "3.0.0") or (python_full_version >= "3.5.0")
 requests==2.26.0; (python_version >= "2.7" and python_full_version < "3.0.0") or (python_full_version >= "3.6.0")
 six==1.16.0; python_version >= "3.7" and python_full_version < "3.0.0" or python_full_version >= "3.3.0" and python_version >= "3.7"
